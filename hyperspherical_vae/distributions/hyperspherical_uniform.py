@@ -40,4 +40,4 @@ class HypersphericalUniform(torch.distributions.Distribution):
 
     def __log_surface_area(self):
         return math.log(2) + ((self._dim + 1) / 2) * math.log(math.pi) - torch.lgamma(
-            torch.Tensor([(self._dim + 1) / 2], device=self.device))
+            torch.tensor([(self._dim + 1) / 2], device=self.device))
