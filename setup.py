@@ -12,7 +12,7 @@ setup(
     license='MIT',
     keywords='pytorch vae variational-auto-encoder von-mises-fisher  machine-learning deep-learning manifold-learning',
     url='https://nicola-decao.github.io/s-vae-pytorch/',
-    download_url='https://github.com/nicola-decao/SVAE',
+    download_url='https://github.com/0Gemini0/s-vae-pytorch',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     install_requires=['numpy', 'torch>=0.4.1', 'scipy>=1.0.0', 'numpy'],
     packages=find_packages()
