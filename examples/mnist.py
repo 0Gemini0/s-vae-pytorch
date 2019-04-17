@@ -92,11 +92,7 @@ class ModelVAE(torch.nn.Module):
 
         return q_z, p_z
         
-    def forward(self, x):
-        
-        # dynamic binarization
-        x = (x > torch.distributions.Uniform(0, 1).sample(x.shape)).float()
-            
+    def forward(self, x): 
         z_mean, z_var = self.encode(x)
         q_z, p_z = self.reparameterize(z_mean, z_var)
         z = q_z.rsample()
@@ -130,13 +126,16 @@ def log_likelihood(model, x, n=10):
     if model.distribution == 'normal':
         log_q_z_x = log_q_z_x.sum(-1)
 
-    return ((log_p_x_z + log_p_z - log_q_z_x).t() - np.log(n)).logsumexp(-1).mean()
+    return ((log_p_x_z + log_p_z - log_q_z_x).t().logsumexp(-1) - np.log(n)).mean()
 
 
 def train(model, optimizer):
     for i, (x_mb, y_mb) in enumerate(train_loader):
 
             optimizer.zero_grad()
+            
+            # dynamic binarization
+            x_mb = (x_mb > torch.distributions.Uniform(0, 1).sample(x_mb.shape)).float()
 
             _, (q_z, p_z), _, x_mb_ = model(x_mb.reshape(-1, 784))
 
@@ -158,7 +157,10 @@ def train(model, optimizer):
 def test(model, optimizer):
     print_ = defaultdict(list)
     for x_mb, y_mb in test_loader:
-
+        
+        # dynamic binarization
+        x_mb = (x_mb > torch.distributions.Uniform(0, 1).sample(x_mb.shape)).float()
+        
         _, (q_z, p_z), _, x_mb_ = model(x_mb.reshape(-1, 784))
         
         print_['recon loss'].append(float(nn.BCEWithLogitsLoss(reduction='none')(x_mb_,
@@ -206,7 +208,3 @@ train(modelS, optimizerS)
 
 # test
 test(modelS, optimizerS)
-
-
-
-
